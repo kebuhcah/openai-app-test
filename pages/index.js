@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 
 export default function Home() {
   const [nameInput, setNameInput] = useState("");
+  const [prevName, setPrevName] = useState("");
   const [result, setResult] = useState();
 
   async function onSubmit(event) {
@@ -23,6 +24,7 @@ export default function Home() {
       }
 
       setResult(data.result);
+      setPrevName(nameInput);
       setNameInput("");
     } catch(error) {
       // Consider implementing your own error handling logic here
@@ -53,7 +55,7 @@ export default function Home() {
           />
           <input type="submit" value={nameInput.trim() === "" ? "More like..." : `${cleanName(nameInput)}? More like...`} />
         </form>
-        <div className={styles.result}>{result}</div>
+        <div className={styles.result}>{result ? `${cleanName(prevName)}? More like ${result}` : ""}</div>
       </main>
     </div>
   );

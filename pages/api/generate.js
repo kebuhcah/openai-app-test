@@ -15,11 +15,11 @@ export default async function (req, res) {
     return;
   }
 
-  const animal = req.body.animal || '';
-  if (animal.trim().length === 0) {
+  const name = req.body.name || '';
+  if (name.trim().length === 0) {
     res.status(400).json({
       error: {
-        message: "Please enter a valid animal",
+        message: "Please enter a valid name",
       }
     });
     return;
@@ -28,8 +28,9 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(animal),
+      prompt: generatePrompt(name),
       temperature: 0.6,
+      stop: "\n"
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
@@ -48,15 +49,17 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(animal) {
-  const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
+function generatePrompt(name) {
+  const capitalizedName = name.split(/\s+/).map(s=>s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ');
 
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${capitalizedAnimal}
-Names:`;
+  return `Come up with a witty rhyming retort based on a phrase, as in the following examples:
+  Super Man? More like Pooper Man!
+  Star Trek? More like Star Wreck!
+  Joe Biden? More like Slow Biden!
+  Donald Trump? More like Donald Dump!
+  Star Wars? More like Star Snores!
+  Lord of the Rings? More like Bored of the Things!
+  Alien Invasion? More like Stay-In vacation!
+  Cloud Computing? More like Crowd Confusing!
+  ${capitalizedName}? More like`;
 }

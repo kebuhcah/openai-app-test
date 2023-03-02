@@ -6,6 +6,7 @@ export default function Home() {
   const [nameInput, setNameInput] = useState("");
   const [prevName, setPrevName] = useState("");
   const [result, setResult] = useState();
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -18,6 +19,7 @@ export default function Home() {
         body: JSON.stringify({ name: nameInput }),
       });
 
+      setLoading(true);
       const data = await response.json();
       if (response.status !== 200) {
         throw data.error || new Error(`Request failed with status ${response.status}`);
@@ -26,7 +28,8 @@ export default function Home() {
       setResult(data.result);
       setPrevName(nameInput);
       setNameInput("");
-    } catch(error) {
+      setLoading(false);
+    } catch (error) {
       // Consider implementing your own error handling logic here
       console.error(error);
       alert(error.message);
@@ -34,7 +37,7 @@ export default function Home() {
   }
 
   function cleanName(name) {
-    return name.trim().split(/\s+/).map(s=>s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ');
+    return name.trim().split(/\s+/).map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ');
   }
 
   return (
@@ -55,7 +58,8 @@ export default function Home() {
           />
           <input type="submit" value={nameInput.trim() === "" ? "More like..." : `${cleanName(nameInput)}? More like...`} />
         </form>
-        <div className={styles.result}>{result ? `${cleanName(prevName)}? More like ${result}` : ""}</div>
+        <div className={styles.result}>{loading ? "Generating..." :
+          result ? `${cleanName(prevName)}? More like ${result}` : ""}</div>
       </main>
     </div>
   );

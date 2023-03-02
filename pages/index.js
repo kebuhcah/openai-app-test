@@ -11,6 +11,7 @@ export default function Home() {
   async function onSubmit(event) {
     event.preventDefault();
     try {
+      setLoading(true);
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
@@ -19,7 +20,6 @@ export default function Home() {
         body: JSON.stringify({ name: nameInput }),
       });
 
-      setLoading(true);
       const data = await response.json();
       if (response.status !== 200) {
         throw data.error || new Error(`Request failed with status ${response.status}`);

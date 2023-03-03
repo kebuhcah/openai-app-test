@@ -51,8 +51,8 @@ export default function Home() {
         <form onSubmit={onSubmit}>
           <input
             type="text"
-            name="animal"
-            placeholder="Enter a name"
+            name="target"
+            placeholder="Enter a target"
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
           />
